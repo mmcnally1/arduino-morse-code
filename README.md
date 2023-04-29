@@ -1,12 +1,12 @@
 ## Arduino Morse Code Decoder  
-Donald Knuth famously said "programs are meant to be read by humans and only incidentally for computers to execute". This essentially means that more important than how a program performs is how easy it is for others to understand what the code is doing. He is obviously being a little tongue in cheek, since an error-free, efficient but inscrutable program is preferable to a well-written one that doesn't work, but he makes a good point. A key part of software development is writing code that is easily understandable and maintainable. However, everyone really knows that even better than writing clean, readable code is writing code that you are the only person on the planet who can understand, so let's write some bare-metal C code! What follows is a simple Morse Code decoder using the avr/io library to interact with the I/O registers of the Arduino directly, rather than using the wrappers provided in the IDE. In deference to Dr. Knuth, this project uses a Trie data structure to handle the decoding logic, which avoids some messy nested if-else statements in the code.
+Donald Knuth famously said "programs are meant to be read by humans and only incidentally for computers to execute". So, more important than how a program performs is how easy it is for others to understand what the code is doing. He is obviously being a little tongue in cheek, since an error-free, efficient but inscrutable program is preferable to a well-written one that doesn't work, but he makes a good point. A key part of software development is writing code that is easy to understand and maintain. However, even better than writing clean, readable code is writing code that you are the only person on the planet who can understand, so let's write some bare-metal C code! What follows is a simple Morse Code decoder using the avr/io library to interact with the I/O registers of the Arduino directly, rather than using the wrappers provided in the IDE. In deference to Dr. Knuth, this project uses a Trie data structure to handle the decoding logic, which avoids some messy nested if-else statements in the code.
 ### Morse Code
 Morse code is a method of encoding characters using signal duration. It was commonly used to send messages by telegraph, and is named after Samuel Morse, one of the inventors of the telegraph. The two basic units of time measurement in Morse Code are the "dot" (dit) and the "dash" (dah). Each letter in the alphabet is encoded as a unique sequence of dots and dashes, which allows for easy decoding. A dash is 3 times as long as a dot, and a space the length of a dash serves to separate the letters in a word. Here is a chart showing how the letters of the english alphabet are encoded:
 
 <img src="Morse-code-chart.png">
 
 ### Tries
-A trie is a data structure used to store strings efficiently. Tries use a tree structure to store each character of a string such that the string associated with a given node is a common prefix shared by all of that node's children. The root of a Trie is the empty string, and each child of the root contains the first character of all strings on whose path it is the first node visited. A string can be retrieved from a Trie via a depth-first traversal until the entire string has been found. Here is a simple example of a Trie (note that not all prefixes need to be actual words):
+A trie is a data structure used to store strings efficiently. Tries use a tree structure to store each character of a string such that the string associated with a given node is a common prefix shared by all of that node's children. The root of a Trie is the empty string, and each child of the root contains the first character of all strings on whose path it is the first node visited. A string can be retrieved from a Trie via depth-first traversal until the entire string has been found. Here is a simple example of a Trie (note that not all prefixes need to be actual words):
 ```mermaid
 graph TD;
 '\0' -- 'B' --> B
@@ -81,7 +81,7 @@ AX[-] --> AY[Y]
 AZ[.] --> BA[Z]
 ```
 
-Since we're just writing our code in C and only using the AVR library, we can use an array to store the trie. The decode() function takes the sequence input by the user (morse[]) and prints the corresponding character from the trie:
+Since we're writing our code in C and only using the AVR library, we can use an array to store the trie. The decode() function takes the sequence input by the user (morse[]) and prints the corresponding character from the trie:
 ```
 void decode() {
   int index = 0;
@@ -190,5 +190,5 @@ ISR(TIMER1_OVF_vect) {
 }
 ```
 
-As far as actually wiring the circuit, we only need a breadboard, a pushbutton, a 10K ohm resistor, and a wire each to connect the pushbutton to power, ground, and the input pin (in this case it is digital pin 8 or PB0). The circuit is shown below:
+As far as actually wiring the circuit, we need a breadboard, a pushbutton, a 10K ohm resistor, and a wire each to connect the pushbutton to power, ground, and the input pin (in this case it is digital pin 8 or PB0). The circuit is shown below:
 <img src="wired-circuit.jpg">
